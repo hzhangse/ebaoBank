@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<!-- Log4j配置文件。 -->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<!-- ===================================================================== -->
+	<!-- Appenders -->
+	<!-- ===================================================================== -->
+
+	<!-- ===== [公共Appender] ===== -->
+
+	<!-- [公共Appender] 默认 -->
+	<appender name="BANK-DEFAULT-APPENDER"
+		class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="changcai-bank.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- [公共Appender] 汇总错误 -->
+	<appender name="BANK-ERROR-APPENDER"
+		class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="changcai-bank-error.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<param name="threshold" value="error" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n" />
+		</layout>
+	</appender>
+	
+
+	<root>
+		<level value="INFO" />
+		<appender-ref ref="BANK-DEFAULT-APPENDER" />
+		<appender-ref ref="BANK-ERROR-APPENDER" />
+	</root>
+</log4j:configuration>

@@ -1,0 +1,446 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.changcai</groupId>
+	<artifactId>changcai-bank</artifactId>
+	<version>${project.release.version}</version>
+	<packaging>jar</packaging>
+	<name>changcai-bank</name>
+	<url>http://maven.apache.org</url>
+	
+	
+  <parent>
+	  <groupId>com.changcai</groupId>
+	  <artifactId>changcai-jar-parent</artifactId>
+	  <version>0.0.1</version>
+	  <relativePath>../../changcai-jar-pom.xml</relativePath>
+  </parent>
+
+
+	<properties>
+		<project.release.policy>SNAPSHOT</project.release.policy>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.base.version>${com.changcai.bank.version}</project.base.version>
+		<project.release.version>${project.base.version}-${project.release.policy}</project.release.version>
+		<spring-framework.version>4.0.6.RELEASE</spring-framework.version>
+		<logback.version>1.0.13</logback.version>
+		<slf4j.version>1.7.5</slf4j.version>
+	</properties>
+	<profiles>
+
+
+	<profile>
+			<!-- dev环境 -->
+			<id>dev</id>
+			<properties>
+				<project.release.policy>SNAPSHOT</project.release.policy>
+				<mode>dev</mode>
+				<b2b.client.serverIPAddress>139.196.215.213</b2b.client.serverIPAddress>
+				<!-- #开启统计时间拦截AOP -->
+				<enablePrintExecTime>true</enablePrintExecTime>
+				<!-- #开启异常拦截AOP -->
+				<enableThrowableIntercept>true</enableThrowableIntercept>
+				<!-- #请求开启validator -->
+				<enableSendValidator>true</enableSendValidator>
+				<!-- #接收开启validator -->
+				<enableRecValidator>true</enableRecValidator>
+				<!-- 打印请求接收message -->
+				<enableLog>true</enableLog>
+				<!-- #资金汇总账号 -->
+				<SupAcctId>11015091833000</SupAcctId>
+				<!-- #出入金账户 -->
+				<RelatedAcctId>11015092061008</RelatedAcctId>
+				<!-- #账户证件号码 -->
+				<IdCode>MA1K33WT-2</IdCode>
+				<!-- #组织机构代码证 -->
+				<IdType>52</IdType>
+			</properties>
+			<!-- 默认激活本环境 -->
+
+		</profile>
+		<!-- 生产环境 -->
+		<profile>
+			<id>releases</id>
+			<properties>
+				<project.release.policy>prd</project.release.policy>
+				<mode>prd</mode>
+				<b2b.client.serverIPAddress>10.27.149.125</b2b.client.serverIPAddress>
+				<!-- #开启统计时间拦截AOP -->
+				<enablePrintExecTime>true</enablePrintExecTime>
+				<!-- #开启异常拦截AOP -->
+				<enableThrowableIntercept>true</enableThrowableIntercept>
+				<!-- #请求开启validator -->
+				<enableSendValidator>false</enableSendValidator>
+				<!-- #接收开启validator -->
+				<enableRecValidator>false</enableRecValidator>
+				<!-- 打印请求接收message -->
+				<enableLog>true</enableLog>
+				<!-- #资金汇总账号 -->
+				<SupAcctId>11015091833000</SupAcctId>
+				<!-- #出入金账户 -->
+				<RelatedAcctId>11015092061008</RelatedAcctId>
+				<!-- #账户证件号码 -->
+				<IdCode>MA1K33WT-2</IdCode>
+				<!-- #组织机构代码证 -->
+				<IdType>52</IdType>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+	</profiles>
+	<repositories>
+		<repository>
+			<id>releases</id>
+			<url>http://192.168.5.9:8081/nexus/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<url>http://192.168.5.9:8081/nexus/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>thirdparty</id>
+			<url>http://192.168.5.9:8081/nexus/content/repositories/thirdparty</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>releases</id>
+			<url>http://192.168.5.9:8081/nexus/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>snapshots</id>
+			<url>http://192.168.5.9:8081/nexus/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>thirdparty</id>
+			<url>http://192.168.5.9:8081/nexus/content/repositories/thirdparty</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>http://192.168.5.9:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://192.168.5.9:8081/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.2.4.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>javax.el-api</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
+		<!-- spring aop支持 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
+
+
+
+		<!-- Spring test 支持 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.changcai</groupId>
+			<artifactId>changcai-core</artifactId>
+			<version>${com.changcai.core.version}-${project.release.policy}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-aop</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-net</artifactId>
+					<groupId>commons-net</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-pool</artifactId>
+					<groupId>commons-pool</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>java-memcached</artifactId>
+					<groupId>com.danga</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-context</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>mybatis-spring</artifactId>
+					<groupId>org.mybatis</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>slf4j-simple</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-collections4</artifactId>
+					<groupId>org.apache.commons</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>mybatis</artifactId>
+					<groupId>org.mybatis</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>demo</artifactId>
+					<groupId>com.changcai</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>javax.inject</artifactId>
+					<groupId>javax.inject</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-beans</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-jdbc</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-web</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>changcai-common</artifactId>
+					<groupId>com.changcai</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jsp-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-dao</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>javax.servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-core</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>ons-client</artifactId>
+					<groupId>com.aliyun.openservices</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>mysql-connector-java</artifactId>
+					<groupId>mysql</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-aspects</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-dbcp</artifactId>
+					<groupId>commons-dbcp</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>rocketmq-client</artifactId>
+					<groupId>com.alibaba.rocketmq</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-lang3</artifactId>
+					<groupId>org.apache.commons</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>hessian</artifactId>
+					<groupId>com.caucho</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
+		<!-- 使用SLF4J和LogBack作为日志 -->
+
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-api</artifactId> 
+			<version>${slf4j.version}</version> </dependency> <dependency> <groupId>org.slf4j</groupId> 
+			<artifactId>jcl-over-slf4j</artifactId> <version>${slf4j.version}</version> 
+			</dependency> <dependency> <groupId>org.slf4j</groupId> <artifactId>log4j-over-slf4j</artifactId> 
+			<version>${slf4j.version}</version> </dependency> <dependency> <groupId>ch.qos.logback</groupId> 
+			<artifactId>logback-classic</artifactId> <version>${logback.version}</version> 
+			</dependency> <dependency> <groupId>ch.qos.logback</groupId> <artifactId>logback-core</artifactId> 
+			<version>${logback.version}</version> </dependency> <dependency> <groupId>ch.qos.logback</groupId> 
+			<artifactId>logback-access</artifactId> <version>${logback.version}</version> 
+			</dependency> -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.9.10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.changcai</groupId>
+			<artifactId>changcai-netty-client</artifactId>
+			<version>${com.changcai.nettyclient.version}-${project.release.policy}</version>
+		</dependency>
+		<!-- aspectj支持 -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.8.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.6</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+
+				<directory>src/main/resources</directory>
+
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>testng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
